@@ -16,6 +16,10 @@ import iconInst from './public/iconinst.png';
 import iconTik from './public/icontik.png';
 import logoSj from './public/logosj.png';
 
+const floatingWhatsappMessage = encodeURIComponent(
+  'Olá! Gostaria saber informações sobre o show do Sem Juizo!',
+);
+
 export default function App() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-amber-500 selection:text-zinc-950">
@@ -80,7 +84,7 @@ export default function App() {
       <Footer />
 
       <motion.a
-        href="https://wa.me/5541995956970"
+        href={`https://wa.me/5541995956970?text=${floatingWhatsappMessage}`}
         target="_blank"
         rel="noopener noreferrer"
         initial={{ scale: 0, opacity: 0 }}

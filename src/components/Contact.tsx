@@ -4,9 +4,29 @@
  */
 
 import { useState } from 'react';
-import type { FormEvent } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import { motion } from 'motion/react';
 import { Send, Phone, Mail, MapPin, Instagram, Music2 } from 'lucide-react';
+
+const WHATSAPP_NUMBER = '5541995956970';
+
+type FormData = {
+  fullName: string;
+  phone: string;
+  venue: string;
+  eventDate: string;
+  eventType: string;
+  message: string;
+};
+
+const initialFormData: FormData = {
+  fullName: '',
+  phone: '',
+  venue: '',
+  eventDate: '',
+  eventType: 'Show em Casa Noturna',
+  message: '',
+};
 
 const contactLinks = [
   {
@@ -24,12 +44,39 @@ const contactLinks = [
 ];
 
 export default function Contact() {
+  const [formData, setFormData] = useState<FormData>(initialFormData);
   const [formState, setFormState] = useState<'idle' | 'sending' | 'success'>('idle');
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setFormState('sending');
-    setTimeout(() => setFormState('success'), 1500);
+
+    const formattedDate = formData.eventDate
+      ? new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(`${formData.eventDate}T00:00:00`))
+      : 'Nao informada';
+
+    const whatsappMessage = [
+      'Ola! Gostaria de solicitar um orcamento para o show do Sem Juizo.',
+      '',
+      `Nome: ${formData.fullName}`,
+      `WhatsApp: ${formData.phone}`,
+      `Local / Empresa: ${formData.venue}`,
+      `Data desejada: ${formattedDate}`,
+      `Tipo de evento: ${formData.eventType}`,
+      `Mensagem: ${formData.message || 'Nao informada'}`,
+    ].join('\n');
+
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    setFormState('success');
+  };
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((current) => ({ ...current, [name]: value }));
   };
 
   return (
@@ -62,7 +109,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">WhatsApp / Telefone</p>
-                  <a href="https://wa.me/5541995956970" className="text-xl font-bold text-white hover:text-amber-500 transition-colors">
+                  <a href={`https://wa.me/${WHATSAPP_NUMBER}`} className="text-xl font-bold text-white hover:text-amber-500 transition-colors">
                     (41) 99595-6970
                   </a>
                 </div>
@@ -122,9 +169,12 @@ export default function Contact() {
                   <Send className="w-8 h-8" />
                 </div>
                 <h4 className="text-2xl font-bold text-white mb-2">Mensagem Enviada!</h4>
-                <p className="text-zinc-400">Obrigado pelo interesse. Entraremos em contato em breve.</p>
+                <p className="text-zinc-400">Seu WhatsApp foi aberto com a mensagem pronta para envio.</p>
                 <button
-                  onClick={() => setFormState('idle')}
+                  onClick={() => {
+                    setFormData(initialFormData);
+                    setFormState('idle');
+                  }}
                   className="mt-8 text-amber-500 font-bold hover:underline"
                 >
                   Enviar outra mensagem
@@ -134,39 +184,41 @@ export default function Contact() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-zinc-500 ml-1">Nome Completo</label>
-                    <input required type="text" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors" placeholder="Seu nome" />
+                    <label className="text-xs font-bold uppercase tracking-widest text-zinc-500 ml-1">Nome</label>
+                    <input required name="fullName" value={formData.fullName} onChange={handleChange} type="text" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors" placeholder="Seu nome" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-zinc-500 ml-1">WhatsApp</label>
-                    <input required type="tel" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors" placeholder="(00) 00000-0000" />
+                    <input required name="phone" value={formData.phone} onChange={handleChange} type="tel" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors" placeholder="(00) 00000-0000" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-zinc-500 ml-1">Local / Empresa</label>
-                  <input required type="text" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors" placeholder="Nome do local ou evento" />
+                  <input required name="venue" value={formData.venue} onChange={handleChange} type="text" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors" placeholder="Nome do local ou evento" />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-zinc-500 ml-1">Data Desejada</label>
-                    <input required type="date" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors" />
+                    <input required name="eventDate" value={formData.eventDate} onChange={handleChange} type="date" className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-zinc-500 ml-1">Tipo de Evento</label>
-                    <select className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors appearance-none">
-                      <option>Show em Casa Noturna</option>
+                    <select name="eventType" value={formData.eventType} onChange={handleChange} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors appearance-none">
+                      <option>Casa Noturna / Bar / Pub</option>
                       <option>Evento Corporativo</option>
-                      <option>Casamento / Particular</option>
-                      <option>Festival / Publico</option>
+                      <option>Casamento / Despedida de Solteiro (a)</option>
+                      <option>Aniversario / Particular</option>
+                      <option>Festival / Público</option>
+                      <option>Governamental / Prefeitura</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-zinc-500 ml-1">Mensagem</label>
-                  <textarea rows={4} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors resize-none" placeholder="Conte mais sobre seu evento..." />
+                  <textarea name="message" value={formData.message} onChange={handleChange} rows={4} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:border-amber-500 outline-none transition-colors resize-none" placeholder="Conte mais sobre seu evento..." />
                 </div>
 
                 <button
