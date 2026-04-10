@@ -10,7 +10,7 @@ export default function About() {
   const stats = [
     { icon: Star, label: 'Ano', value: '1+' },
     { icon: Music, label: 'Shows em 2025', value: '+200' },
-        { icon: Eye, label: 'Visualizacoes', value: '400k+' },
+    { icon: Eye, label: 'Visualizações', value: '400k+' },
     { icon: Users, label: 'Seguidores', value: '+15k' },
   ];
 
@@ -25,42 +25,42 @@ export default function About() {
         className="relative z-10 mx-auto max-w-6xl px-6 text-center"
       >
         <h2 className="mb-4 text-sm font-bold uppercase tracking-[0.3em] text-amber-500">
-          Nossa Historia
+          Nossa História
         </h2>
         <h3 className="mx-auto mb-8 max-w-4xl text-4xl font-black tracking-tight text-white md:text-5xl lg:text-6xl">
-          Uma experiencia que seu publico sente do comeco ao fim.
+          Uma experiência que seu público sente do começo ao fim.
         </h3>
 
         <div className="mx-auto max-w-4xl space-y-6 text-lg leading-relaxed text-zinc-300 md:text-xl">
           <p>
-            O <span className="font-bold text-white">Grupo Sem Juizo</span> nasceu como muitos outros projetos, mas rapidamente se destacou pela
-            uniao de seus integrantes, <span className="font-bold text-white">compromisso com a qualidade musical</span> e
-            uma <span className="font-bold text-white">presenca de palco marcante</span>.
+            O <span className="font-bold text-white">Grupo Sem Juízo</span> nasceu como muitos outros projetos, mas rapidamente se destacou pela
+            união de seus integrantes, <span className="font-bold text-white">compromisso com a qualidade musical</span> e
+            uma <span className="font-bold text-white">presença de palco marcante</span>.
           </p>
           <p>
-            Em menos de um ano, esse grupo independente conquistou seu espaco em Curitiba, levando
+            Em menos de um ano, esse grupo independente conquistou seu espaço em Curitiba, levando
             energia, profissionalismo e uma
-            <span className="font-bold text-white"> conexao real com o publico</span> por onde passa.
+            <span className="font-bold text-white"> conexão real com o público</span> por onde passa.
           </p>
           <p>
-            Mais do que um show, entregamos uma <span className="font-bold text-white">experiencia completa</span>: do primeiro acorde ao ultimo refrao,
-            o publico vive uma atmosfera <span className="font-bold text-white">envolvente</span>, <span className="font-bold text-white">vibrante</span> e
-            <span className="font-bold text-white"> impossivel de ficar parado</span>.
+            Mais que um show, entregamos uma <span className="font-bold text-white">experiência completa</span>: do primeiro acorde ao último refrão,
+            o público vive uma atmosfera <span className="font-bold text-white">envolvente</span>, <span className="font-bold text-white">vibrante</span> e
+            <span className="font-bold text-white"> impossível de ficar parado</span>.
           </p>
           <p>
-            Nosso repertorio passeia pelos <span className="font-bold text-white">grandes sucessos do pagode</span> dos classicos que marcaram epoca
-            aos hits atuais, com influencias que vao de <span className="font-bold text-white">Revelacao</span> a
-            <span className="font-bold text-white"> Pedro Sampaio</span>, de <span className="font-bold text-white">Raca Negra</span> a
-            <span className="font-bold text-white"> Leo Santana</span>, de <span className="font-bold text-white">Menos e Mais</span> e
-            <span className="font-bold text-white"> Thiaguinho</span> ate <span className="font-bold text-white">Ivete Sangalo</span>.
+            Nosso repertório passeia pelos <span className="font-bold text-white">grandes sucessos do pagode</span> dos clássicos que marcaram época
+            aos hits atuais, com influências que vão de <span className="font-bold text-white">Revelação</span> a
+            <span className="font-bold text-white"> Pedro Sampaio</span>, de <span className="font-bold text-white">Raça Negra</span> a
+            <span className="font-bold text-white"> Léo Santana</span>, de <span className="font-bold text-white">Menos e Mais</span> e
+            <span className="font-bold text-white"> Thiaguinho</span> até <span className="font-bold text-white">Ivete Sangalo</span>.
           </p>
           <p>
-            O resultado e um show <span className="font-bold text-white">dinamico</span>, <span className="font-bold text-white">versatil</span> e
+            O resultado é um show <span className="font-bold text-white">dinâmico</span>, <span className="font-bold text-white">versátil</span> e
             <span className="font-bold text-white"> pensado para fazer seu evento acontecer de verdade</span>.
           </p>
           <p>
-            E quando essa energia encontra o seu publico, o resultado e simples:
-            <span className="block pt-2 text-2xl font-black text-white md:text-3xl">um show inesquecivel.</span>
+            E quando essa energia encontra o seu público, o resultado é simples:
+            <span className="block pt-2 text-2xl font-black text-white md:text-3xl">um show inesquecível.</span>
           </p>
         </div>
 
