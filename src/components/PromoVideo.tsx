@@ -8,13 +8,16 @@ import { motion } from 'motion/react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 const youtubeVideoId = 'WUAzpgLG2jI';
+const vimeoVideoId = '1181757596';
 
 export default function PromoVideo() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const youtubeIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const vimeoIframeRef = useRef<HTMLIFrameElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const embedUrl = useMemo(() => {
+  const youtubeEmbedUrl = useMemo(() => {
     const params = new URLSearchParams({
       autoplay: '1',
       mute: '1',
@@ -30,8 +33,26 @@ export default function PromoVideo() {
     return `https://www.youtube.com/embed/${youtubeVideoId}?${params.toString()}`;
   }, []);
 
-  const postToPlayer = (func: string) => {
-    iframeRef.current?.contentWindow?.postMessage(
+  const vimeoEmbedUrl = useMemo(() => {
+    const params = new URLSearchParams({
+      autoplay: '1',
+      muted: '1',
+      controls: '1',
+      loop: '1',
+      autopause: '1',
+      playsinline: '1',
+      title: '0',
+      byline: '0',
+      portrait: '0',
+      api: '1',
+      background: '0',
+    });
+
+    return `https://player.vimeo.com/video/${vimeoVideoId}?${params.toString()}`;
+  }, []);
+
+  const postToYoutube = (func: string) => {
+    youtubeIframeRef.current?.contentWindow?.postMessage(
       JSON.stringify({
         event: 'command',
         func,
@@ -41,38 +62,85 @@ export default function PromoVideo() {
     );
   };
 
+  const postToVimeo = (method: string, value?: number) => {
+    vimeoIframeRef.current?.contentWindow?.postMessage(
+      JSON.stringify(
+        value === undefined
+          ? { method }
+          : { method, value }
+      ),
+      'https://player.vimeo.com'
+    );
+  };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const syncScreen = () => setIsMobile(mediaQuery.matches);
+
+    syncScreen();
+    mediaQuery.addEventListener('change', syncScreen);
+
+    return () => mediaQuery.removeEventListener('change', syncScreen);
+  }, []);
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          postToPlayer('playVideo');
+        if (isMobile) {
+          if (entry.isIntersecting) {
+            postToVimeo('play');
+            return;
+          }
+
+          postToVimeo('pause');
           return;
         }
 
-        postToPlayer('pauseVideo');
+        if (entry.isIntersecting) {
+          postToYoutube('playVideo');
+          return;
+        }
+
+        postToYoutube('pauseVideo');
       },
       { threshold: 0.45 }
     );
 
     observer.observe(section);
     return () => observer.disconnect();
-  }, []);
+  }, [isMobile]);
 
-  const handleIframeLoad = () => {
-    postToPlayer('mute');
+  const handleYoutubeLoad = () => {
+    postToYoutube('mute');
+  };
+
+  const handleVimeoLoad = () => {
+    postToVimeo('setVolume', 0);
   };
 
   const toggleMute = () => {
+    if (isMobile) {
+      if (isMuted) {
+        postToVimeo('setVolume', 1);
+        setIsMuted(false);
+        return;
+      }
+
+      postToVimeo('setVolume', 0);
+      setIsMuted(true);
+      return;
+    }
+
     if (isMuted) {
-      postToPlayer('unMute');
+      postToYoutube('unMute');
       setIsMuted(false);
       return;
     }
 
-    postToPlayer('mute');
+    postToYoutube('mute');
     setIsMuted(true);
   };
 
@@ -88,15 +156,27 @@ export default function PromoVideo() {
         >
           <div className="relative overflow-hidden rounded-[2.25rem] bg-black">
             <iframe
-              ref={iframeRef}
-              src={embedUrl}
+              ref={youtubeIframeRef}
+              src={youtubeEmbedUrl}
               title="Sem Juizo ao vivo"
-              className="aspect-video w-full"
+              className="hidden aspect-video w-full md:block"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
-              onLoad={handleIframeLoad}
+              onLoad={handleYoutubeLoad}
+            />
+
+            <iframe
+              ref={vimeoIframeRef}
+              src={vimeoEmbedUrl}
+              title="Sem Juizo ao vivo mobile"
+              className="aspect-[9/16] w-full md:hidden"
+              loading="lazy"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+              onLoad={handleVimeoLoad}
             />
 
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-zinc-950/55 via-transparent to-zinc-950/20" />
