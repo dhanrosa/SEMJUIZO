@@ -3,37 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Volume2, VolumeX } from 'lucide-react';
 
-const youtubeVideoId = 'WUAzpgLG2jI';
-const vimeoVideoId = '1181757596';
+const desktopVimeoVideoId = '1189216955';
+const mobileVimeoVideoId = '1189216866';
 
 export default function PromoVideo() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const youtubeIframeRef = useRef<HTMLIFrameElement | null>(null);
-  const vimeoIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const desktopVimeoIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const mobileVimeoIframeRef = useRef<HTMLIFrameElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
-  const youtubeEmbedUrl = useMemo(() => {
-    const params = new URLSearchParams({
-      autoplay: '1',
-      mute: '1',
-      controls: '1',
-      rel: '0',
-      modestbranding: '1',
-      playsinline: '1',
-      enablejsapi: '1',
-      loop: '1',
-      playlist: youtubeVideoId,
-    });
-
-    return `https://www.youtube.com/embed/${youtubeVideoId}?${params.toString()}`;
-  }, []);
-
-  const vimeoEmbedUrl = useMemo(() => {
+  const createVimeoEmbedUrl = (videoId: string) => {
     const params = new URLSearchParams({
       autoplay: '1',
       muted: '1',
@@ -48,22 +32,25 @@ export default function PromoVideo() {
       background: '0',
     });
 
-    return `https://player.vimeo.com/video/${vimeoVideoId}?${params.toString()}`;
-  }, []);
-
-  const postToYoutube = (func: string) => {
-    youtubeIframeRef.current?.contentWindow?.postMessage(
-      JSON.stringify({
-        event: 'command',
-        func,
-        args: [],
-      }),
-      'https://www.youtube.com'
-    );
+    return `https://player.vimeo.com/video/${videoId}?${params.toString()}`;
   };
 
-  const postToVimeo = (method: string, value?: number) => {
-    vimeoIframeRef.current?.contentWindow?.postMessage(
+  const desktopVimeoEmbedUrl = useMemo(
+    () => createVimeoEmbedUrl(desktopVimeoVideoId),
+    []
+  );
+
+  const mobileVimeoEmbedUrl = useMemo(
+    () => createVimeoEmbedUrl(mobileVimeoVideoId),
+    []
+  );
+
+  const postToVimeo = (
+    iframeRef: RefObject<HTMLIFrameElement | null>,
+    method: string,
+    value?: number
+  ) => {
+    iframeRef.current?.contentWindow?.postMessage(
       JSON.stringify(
         value === undefined
           ? { method }
@@ -72,6 +59,8 @@ export default function PromoVideo() {
       'https://player.vimeo.com'
     );
   };
+
+  const activeVimeoIframeRef = isMobile ? mobileVimeoIframeRef : desktopVimeoIframeRef;
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 767px)');
@@ -91,20 +80,20 @@ export default function PromoVideo() {
       ([entry]) => {
         if (isMobile) {
           if (entry.isIntersecting) {
-            postToVimeo('play');
+            postToVimeo(mobileVimeoIframeRef, 'play');
             return;
           }
 
-          postToVimeo('pause');
+          postToVimeo(mobileVimeoIframeRef, 'pause');
           return;
         }
 
         if (entry.isIntersecting) {
-          postToYoutube('playVideo');
+          postToVimeo(desktopVimeoIframeRef, 'play');
           return;
         }
 
-        postToYoutube('pauseVideo');
+        postToVimeo(desktopVimeoIframeRef, 'pause');
       },
       { threshold: 0.45 }
     );
@@ -113,34 +102,18 @@ export default function PromoVideo() {
     return () => observer.disconnect();
   }, [isMobile]);
 
-  const handleYoutubeLoad = () => {
-    postToYoutube('mute');
-  };
-
-  const handleVimeoLoad = () => {
-    postToVimeo('setVolume', 0);
+  const handleVimeoLoad = (iframeRef: RefObject<HTMLIFrameElement | null>) => {
+    postToVimeo(iframeRef, 'setVolume', 0);
   };
 
   const toggleMute = () => {
-    if (isMobile) {
-      if (isMuted) {
-        postToVimeo('setVolume', 1);
-        setIsMuted(false);
-        return;
-      }
-
-      postToVimeo('setVolume', 0);
-      setIsMuted(true);
-      return;
-    }
-
     if (isMuted) {
-      postToYoutube('unMute');
+      postToVimeo(activeVimeoIframeRef, 'setVolume', 1);
       setIsMuted(false);
       return;
     }
 
-    postToYoutube('mute');
+    postToVimeo(activeVimeoIframeRef, 'setVolume', 0);
     setIsMuted(true);
   };
 
@@ -156,27 +129,27 @@ export default function PromoVideo() {
         >
           <div className="relative overflow-hidden rounded-[2.25rem] bg-black">
             <iframe
-              ref={youtubeIframeRef}
-              src={youtubeEmbedUrl}
+              ref={desktopVimeoIframeRef}
+              src={desktopVimeoEmbedUrl}
               title="Sem Juizo ao vivo"
               className="hidden aspect-video w-full md:block"
               loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
-              onLoad={handleYoutubeLoad}
+              onLoad={() => handleVimeoLoad(desktopVimeoIframeRef)}
             />
 
             <iframe
-              ref={vimeoIframeRef}
-              src={vimeoEmbedUrl}
+              ref={mobileVimeoIframeRef}
+              src={mobileVimeoEmbedUrl}
               title="Sem Juizo ao vivo mobile"
               className="aspect-[9/16] w-full md:hidden"
               loading="lazy"
               allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
-              onLoad={handleVimeoLoad}
+              onLoad={() => handleVimeoLoad(mobileVimeoIframeRef)}
             />
 
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-zinc-950/55 via-transparent to-zinc-950/20" />

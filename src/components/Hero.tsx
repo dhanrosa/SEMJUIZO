@@ -7,7 +7,7 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { Calendar, MessageSquare, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
 import bannerImage from '../public/banner.png';
-import logoRetoSj from '../public/logoretosj.png';
+import logoSemJuizo from '../public/LOGOSEMJUIZO.png';
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -51,9 +51,9 @@ export default function Hero() {
           </span>
           
           <img
-            src={logoRetoSj}
+            src={logoSemJuizo}
             alt="Sem Juizo"
-            className="mx-auto mb-6 h-20 w-auto max-w-full object-contain md:h-[6.7rem] lg:h-[8.4rem]"
+            className="mx-auto mb-6 h-[7.5rem] w-auto max-w-full object-contain md:h-[10.05rem] lg:h-[12.6rem]"
           />
           
           <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">

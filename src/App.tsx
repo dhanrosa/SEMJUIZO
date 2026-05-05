@@ -14,7 +14,7 @@ import { MessageCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import iconInst from './public/iconinst.png';
 import iconTik from './public/icontik.png';
-import logoSj from './public/logosj.png';
+import logoSemJuizo from './public/LOGOSEMJUIZO.png';
 
 const floatingWhatsappMessage = encodeURIComponent(
   'Olá! Gostaria saber informações sobre o show do Sem Juizo!',
@@ -28,9 +28,9 @@ export default function App() {
           <div className="pointer-events-auto">
             <a href="#" className="flex items-center gap-2">
               <img
-                src={logoSj}
+                src={logoSemJuizo}
                 alt="Logo Sem Juizo"
-                className="h-24 w-auto object-contain"
+                className="h-12 w-auto object-contain"
               />
             </a>
           </div>
