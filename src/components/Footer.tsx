@@ -4,6 +4,7 @@
  */
 
 import { Instagram, Mail, Music2, Phone } from 'lucide-react';
+import logoSemJuizo from '../public/LOGOSEMJUIZO.png';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,10 +13,11 @@ export default function Footer() {
     <footer className="bg-zinc-950 border-t border-zinc-900 py-12">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-xl font-black text-white tracking-tighter">SEM JUIZO</p>
-            <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Pagode Premium</p>
-          </div>
+          <img
+            src={logoSemJuizo}
+            alt="Logo Sem Juizo"
+            className="h-16 w-auto object-contain"
+          />
 
           <div className="flex flex-wrap gap-8 text-xs font-bold uppercase tracking-widest text-zinc-500">
             <a href="#sobre" className="hover:text-amber-500 transition-colors">Sobre</a>

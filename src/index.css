@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --color-amber-400: #ffe001;
+  --color-amber-500: #ffe001;
+}
+
 @layer utilities {
   .animate-pulse-slow {
     animation: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
