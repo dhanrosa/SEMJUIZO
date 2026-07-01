@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-amber-400: #ffe001;
-  --color-amber-500: #ffe001;
+  --color-amber-400: #c026d3;
+  --color-amber-500: #8b00ff;
 }
 
 @layer utilities {
