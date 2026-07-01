@@ -6,7 +6,8 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Calendar, MessageSquare, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
-import bannerImage from '../public/banner.png';
+import bannerPc from '../public/bannerpc.png';
+import bannerMobile from '../public/bannermobile.png';
 import logoSemJuizo from '../public/LOGOSEMJUIZO.png';
 
 export default function Hero() {
@@ -30,11 +31,14 @@ export default function Hero() {
     <section ref={containerRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-zinc-950">
       {/* Background Image with Overlay */}
       <motion.div style={{ y }} className="absolute inset-0 z-0">
-        <img 
-          src={bannerImage}
-          alt="Show ao vivo" 
-          className="w-full h-full object-cover opacity-60 scale-110 animate-pulse-slow"
-        />
+        <picture className="block h-full w-full">
+          <source media="(min-width: 768px)" srcSet={bannerPc} />
+          <img
+            src={bannerMobile}
+            alt="Show ao vivo"
+            className="w-full h-full object-cover opacity-60 scale-110 animate-pulse-slow"
+          />
+        </picture>
         <div className="absolute inset-0 bg-zinc-950/60 backdrop-blur-[2px]"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/40 via-transparent to-zinc-950"></div>
       </motion.div>
